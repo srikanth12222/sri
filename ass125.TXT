@@ -1,0 +1,486 @@
+SQL> SET PAGES 1000 LINES 1000
+SQL> CL SCR
+SQL> SELECT ENAME
+  2  FROM EMP,DEPT
+  3  WHERE EMP.DEPTNO=DEPT.DEPTNO AND DNAME LIKE '%S';
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+ALLEN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+WARD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+MARTIN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+TURNER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+JAMES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+6 rows selected.
+
+SQL> SELECT ENAEM
+  2  FROM EMP
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DNAME LIKE '%S';
+WHERE DNAME LIKE '%S'
+                    *
+ERROR at line 5:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM DEPT
+  5* WHERE DNAME LIKE '%S'
+SQL> //
+WHERE DNAME LIKE '%S'
+                    *
+ERROR at line 5:
+ORA-00907: missing right parenthesis 
+
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DNAME LIKE '%S');
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+ALLEN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+WARD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+MARTIN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+TURNER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+JAMES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+6 rows selected.
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE MAX(SAL) IN (SELECT MAX(SAL)
+  6  FROM EMP
+  7  WHERE DNAME='ACCOUNTING'));
+WHERE MAX(SAL) IN (SELECT MAX(SAL)
+      *
+ERROR at line 5:
+ORA-00934: group function is not allowed here 
+
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE MAX(SAL) AND DEPTNO=(SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DNAME='ACCOUNTING');
+WHERE MAX(SAL) AND DEPTNO=(SELECT DEPTNO
+      *
+ERROR at line 3:
+ORA-00934: group function is not allowed here 
+
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE SAL IN (SELECT MAX(SAL)
+  4  FROM EMP
+  5  WHERE DEPTNO IN (SELECT DEPTNO
+  6  FROM EMP
+  7  WHERE DNAME='ACCOUNTING';
+WHERE DNAME='ACCOUNTING'
+                       *
+ERROR at line 7:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME
+  2  FROM EMP
+  3  WHERE SAL IN (SELECT MAX(SAL)
+  4  FROM EMP
+  5  WHERE DEPTNO IN (SELECT DEPTNO
+  6  FROM EMP
+  7* WHERE DNAME='ACCOUNTING'))
+SQL> //
+WHERE DNAME='ACCOUNTING'))
+      *
+ERROR at line 7:
+ORA-00904: "DNAME": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME
+  2  FROM EMP
+  3  WHERE SAL IN (SELECT MAX(SAL)
+  4  FROM EMP
+  5  WHERE DEPTNO IN (SELECT DEPTNO
+  6  FROM DEPT
+  7* WHERE DNAME='ACCOUNTING'))
+SQL> //
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+KING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+SQL> SELECT DNAME
+  2  FROM EMP
+  3  
+SQL> 
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COMM IN (MAX(COMM));
+WHERE COMM IN (MAX(COMM))
+               *
+ERROR at line 5:
+ORA-00934: group function is not allowed here 
+
+
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COMM IN (SELECT MAX(SAL)
+  6  FROM EMP
+  7  ));
+
+no rows selected
+
+SQL> SELECT DNAME
+  2  FRFOM DEPT
+  3  WHERE DEPTNO IN(SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COMM IN (SELECT MAX(COMM)
+  6  FROM EMP));
+FRFOM DEPT
+      *
+ERROR at line 2:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN(SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COMM IN (SELECT MAX(COMM)
+  6* FROM EMP))
+SQL> //
+
+DNAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+SALES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DNAME LIKE '_O%');
+
+no rows selected
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPNO IN (SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DEPTNO IN(SELECT DEPTNO
+  6  FROM EMP
+  7  WHERE ENAME='SCOTT'));
+WHERE DEPNO IN (SELECT DEPTNO
+      *
+ERROR at line 3:
+ORA-00904: "DEPNO": invalid identifier 
+
+
+SQL> SELECT ENAEM
+  2  \\
+  3  
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN(SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DEPTNO IN(SELECT DEPTNO
+  6  FROM EMP
+  7  WHERE ENAME='SCOTT'));
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+FORD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+ADAMS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SCOTT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SMITH                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN(SELECT DEPTNO
+  4  FRON DEPT
+  5  WHERE DNAME IN('ACCOUNTING','OPERATIONS'));
+FRON DEPT
+     *
+ERROR at line 4:
+ORA-00923: FROM keyword not found where expected 
+
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO IN(SELECT DEPTNO
+  4  FROM DEPT
+  5  WHERE DNAME IN ('ACCOUNTING','OPERATIONS'));
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+CLARK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+KING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+MILLER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE SAL>(SELECT SAL
+  4  FROM EMP
+  5  WHERE ENAME='MILLER');
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+ALLEN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+CLARK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SCOTT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+KING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+TURNER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+FORD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+
+8 rows selected.
+
+SQL> SELECT COUNT(*)
+  2  FROM EMP
+  3  
+SQL> 
+SQL> SELECT COUNT(*)
+  2  FROM DEPT
+  3  
+SQL> SELECT COUNT(*),DNAME
+  2  FROM DEPT
+  3  WHERE COUNT(*)>3;
+WHERE COUNT(*)>3
+      *
+ERROR at line 3:
+ORA-00934: group function is not allowed here 
+
+
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE COUNT(*)>(SELECT COUNT(*)
+  4  FROM EMP
+  5  WHERE ENAME='SALESMAN');
+WHERE COUNT(*)>(SELECT COUNT(*)
+      *
+ERROR at line 3:
+ORA-00934: group function is not allowed here 
+
+
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COUNT(*)>(SELECT COUNT(*)
+  6  FROM EMP
+  7  WHERE ENAME='SALESMAN'));
+WHERE COUNT(*)>(SELECT COUNT(*)
+      *
+ERROR at line 5:
+ORA-00934: group function is not allowed here 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE COUNT(*)>(SELECT COUNT(*)
+  6  FROM EMP
+  7* WHERE ENAME='SALESMAN'))
+SQL> SELECT DNAEM
+  2  
+SQL> 
+SQL> SELECT DNAEM
+  2  
+SQL> 
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE JOB='SALESMAN'
+  4  GROUP BY JOB
+  5  HAVING COUNT(JOB)>=3;
+HAVING COUNT(JOB)>=3
+             *
+ERROR at line 5:
+ORA-00904: "JOB": invalid identifier 
+
+
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE JOB='SALESMAN'
+  4  GROUP BY JOB
+  5  HAVING JOB>=3;
+HAVING JOB>=3
+       *
+ERROR at line 5:
+ORA-00904: "JOB": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME
+  2  FROM DEPT
+  3  WHERE JOB='SALESMAN'
+  4  GROUP BY DEPTNO
+  5* HAVING COUNT(JOB)>=3
+SQL> //
+HAVING COUNT(JOB)>=3
+             *
+ERROR at line 5:
+ORA-00904: "JOB": invalid identifier 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN  (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE JOB='SALESMAN'
+  6  GROUP BY DEPTNO
+  7* HAVING COUNT(JOB)>=3
+SQL> //
+HAVING COUNT(JOB)>=3
+                   *
+ERROR at line 7:
+ORA-00907: missing right parenthesis 
+
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN  (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE JOB='SALESMAN'
+  6  GROUP BY DEPTNO
+  7* HAVING COUNT(JOB)>=3)
+SQL> //
+
+DNAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+SALES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+SQL> SELECT DNAME
+  2  FROM DEPT
+  3  WHERE DEPTNO IN (SELECT DEPTNO
+  4  FROM EMP
+  5  WHERE MGR IS NULL);
+
+DNAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+--------------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+ACCOUNTING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE DEPTNO
+  4  IN (SELECT DEPTNO
+  5  FROM DEPT
+  6  WHERE DEPTNO IN (SELECT DEPTNO
+  7  FROM EMP
+  8  WHERE ENAME='JONES'));
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+FORD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+ADAMS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SCOTT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SMITH                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+SQL> SELECT ENAME
+  2  FROM EMP
+  3  WHERE EMPNO IN (SELECT MGR
+  4  FROM EMP
+  5  WHERE MGR IN (SELECT EMPNO
+  6  FROM EMP));
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+KING                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+CLARK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+FORD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+SCOTT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+6 rows selected.
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME
+  2  FROM EMP
+  3  WHERE MGR IN (SELECT EMPNO
+  4  FROM EMP
+  5  WHERE EMPNO IN (SELECT MGR
+  6* FROM EMP))
+SQL> //
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+SMITH                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JAMES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+TURNER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+MARTIN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+WARD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+ALLEN                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+CLARK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+FORD                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+SCOTT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+ADAMS                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+MILLER                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+
+13 rows selected.
+
+SQL> ED
+Wrote file afiedt.buf
+
+  1  SELECT ENAME
+  2  FROM EMP
+  3  WHERE MGR IN (SELECT EMPNO
+  4  FROM EMP
+  5  WHERE EMPNO IN (SELECT MGR
+  6  FROM EMP
+  7* WHERE ENAME='JONES'))
+SQL> //
+
+ENAME                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+----------                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+CLARK                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+BLAKE                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+JONES                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+
+SQL> 
